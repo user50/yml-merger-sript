@@ -1,0 +1,8 @@
+{
+    "user" : "user50",
+    "psw" : "neuser50",
+    "urls" : [],
+    "files":["files/shop1.xml", "files/shop2.xml"],
+    "encoding" : "cp1251",
+    "outputFile":"files/mergedPrice.xml"
+}
