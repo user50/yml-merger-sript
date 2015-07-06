@@ -30,11 +30,11 @@ public class WriteCategoryCondition implements WriteEventCondition {
         if(!condition)
             return false;
 
-        if (xmlEvent.isStartElement() && xmlEvent.asStartElement().getName().equals("category")){
+        if (xmlEvent.isStartElement() && xmlEvent.asStartElement().getName().getLocalPart().equals("category")){
             currentId = getCategoryId(xmlEvent);
         }
 
-        if (xmlEvent.isEndElement() && xmlEvent.asEndElement().getName().equals("category")){
+        if (xmlEvent.isEndElement() && xmlEvent.asEndElement().getName().getLocalPart().equals("category")){
             addedCategoryIds.add(currentId);
         }
 
