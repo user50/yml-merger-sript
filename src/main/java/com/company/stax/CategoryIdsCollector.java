@@ -1,13 +1,9 @@
 package com.company.stax;
 
-import com.sun.xml.internal.stream.events.CharacterEvent;
-
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.XMLEvent;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -38,14 +34,11 @@ public class CategoryIdsCollector implements XmlEventHandler {
             inCategory = true;
         }
 
-        if (event.isEndElement() && event.asEndElement().getName().equals("category") )
+        if (inCategory && event.isEndElement() && event.asEndElement().getName().getLocalPart().equals("category") )
         {
+            categoryIds.add(currentId);
             inCategory = false;
         }
 
-        if (inCategory && event.isEndElement())
-        {
-            categoryIds.add(currentId);
-        }
     }
 }

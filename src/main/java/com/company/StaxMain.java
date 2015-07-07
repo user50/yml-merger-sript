@@ -35,9 +35,9 @@ public class StaxMain {
         for (String fileName : config.getFiles())
             readerProviders.add(new FileXMLEventReaderProvider(fileName, config.getEncoding()));
 
-        Iterator<XMLEventReaderProvider> iterator = readerProviders.iterator();
+        Iterator<XMLEventReaderProvider> readerProvidersIterator = readerProviders.iterator();
 
-        if (!iterator.hasNext())
+        if (!readerProvidersIterator.hasNext())
             throw new RuntimeException("Must be specified at least one xml source");
 
 
@@ -49,30 +49,30 @@ public class StaxMain {
         handlers.add(inCategories);
 
         XMLOutputFactory ofactory = XMLOutputFactory.newFactory();
-        XMLEventWriter out = ofactory.createXMLEventWriter(new FileOutputStream(config.getOutputFile()), config.getEncoding());
+        XMLEventWriter mergedOut = ofactory.createXMLEventWriter(new FileOutputStream(config.getOutputFile()), config.getEncoding());
 
         Set<String> addedCategoryIds = new HashSet<>();
 
         CategoryIdsCollector categoryIdsCollector = new CategoryIdsCollector(addedCategoryIds);
 
-        StAXService service = new StAXService(iterator.next());
+        StAXService service = new StAXService(readerProvidersIterator.next());
         service.process(categoryIdsCollector);
 
-        while (iterator.hasNext())
+        while (readerProvidersIterator.hasNext())
         {
-            XMLEventReaderProvider readerProvider = iterator.next();
+            XMLEventReaderProvider readerProvider = readerProvidersIterator.next();
             ElementWriter offersElementWriter = new ElementWriter(new WriteElementCondition(new InElement("offers")), readerProvider);
-            handlers.add(new ElementSourceHandler(offersElementWriter, out, inOffers));
+            handlers.add(new ElementSourceHandler(offersElementWriter, mergedOut, inOffers));
 
             ElementWriter categoriesElementWriter = new ElementWriter(
                     new WriteCategoryCondition(new WriteElementCondition(new InElement("categories")), addedCategoryIds), readerProvider);
-            handlers.add(new ElementSourceHandler(categoriesElementWriter, out, inCategories));
+            handlers.add(new ElementSourceHandler(categoriesElementWriter, mergedOut, inCategories));
         }
 
-        MultiXmlEventHandler multiEventHandler = new MultiXmlEventHandler(handlers, out);
+        MultiXmlEventHandler multiEventHandler = new MultiXmlEventHandler(handlers, mergedOut);
 
         service.process(multiEventHandler);
 
-        out.close();
+        mergedOut.close();
     }
 }
