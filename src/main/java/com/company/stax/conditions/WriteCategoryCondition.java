@@ -34,11 +34,15 @@ public class WriteCategoryCondition implements WriteEventCondition {
             currentId = getCategoryId(xmlEvent);
         }
 
+        boolean result = currentId != null && !addedCategoryIds.contains(currentId);
+
         if (xmlEvent.isEndElement() && xmlEvent.asEndElement().getName().getLocalPart().equals("category")){
             addedCategoryIds.add(currentId);
+            currentId = null;
+
         }
 
-        return !addedCategoryIds.contains(currentId);
+        return result;
     }
 
     private String getCategoryId(XMLEvent xmlEvent) {
