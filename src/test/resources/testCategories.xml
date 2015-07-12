@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<yml_catalog>
+    <shop>
+        <name>demo</name>
+        <url>http://domosed.com</url>
+        <currencies>
+            <currency id="RUB" rate="1"/>
+        </currencies>
+        <categories>
+            <category id="35" parentId="0">category5</category>
+            <category id="46" parentId="35">category6</category>
+            <category id="37" parentId="46">category7</category>
+            <category id="48" parentId="35">category8</category>
+        </categories>
+    </shop>
+</yml_catalog>
