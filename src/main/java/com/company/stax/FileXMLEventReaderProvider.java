@@ -30,4 +30,9 @@ public class FileXMLEventReaderProvider implements XMLEventReaderProvider {
             throw new RuntimeException("Can not find file " + fileName);
         }
     }
+
+    @Override
+    public String toString() {
+        return "File: "+fileName;
+    }
 }

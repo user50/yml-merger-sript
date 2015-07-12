@@ -30,4 +30,9 @@ public class HttpXMLEventReaderProvider implements XMLEventReaderProvider {
             throw new RuntimeException("Unable to process url :  " + url + "\n" + e.getMessage());
         }
     }
+
+    @Override
+    public String toString() {
+        return "URL: "+url;
+    }
 }

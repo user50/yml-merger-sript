@@ -4,5 +4,6 @@
     "urls" : [],
     "files":["files/price.xml", "files/price2.xml"],
     "encoding" : "cp1251",
-    "outputFile":"files/mergedPrice.xml"
+    "outputFile":"files/mergedPrice.xml",
+    "categoryIds" : []
 }

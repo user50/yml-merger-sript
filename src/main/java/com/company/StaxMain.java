@@ -5,8 +5,8 @@ import com.company.config.ConfigProvider;
 import com.company.http.HttpService;
 import com.company.merge.HttpClientProvider;
 import com.company.stax.*;
-import com.company.stax.conditions.WriteCategoryCondition;
-import com.company.stax.conditions.WriteElementCondition;
+import com.company.stax.collectors.CategoryIdsCollector;
+import com.company.stax.factories.XmlEventMergerFactory;
 import org.apache.http.impl.client.CloseableHttpClient;
 
 import javax.xml.stream.XMLEventWriter;
@@ -40,14 +40,6 @@ public class StaxMain {
         if (!readerProvidersIterator.hasNext())
             throw new RuntimeException("Must be specified at least one xml source");
 
-
-        List<XmlEventHandler> handlers = new ArrayList<>();
-        InElement inOffers = new InElement("offers");
-        InElement inCategories = new InElement("categories");
-
-        handlers.add(inOffers);
-        handlers.add(inCategories);
-
         XMLOutputFactory ofactory = XMLOutputFactory.newFactory();
         XMLEventWriter mergedOut = ofactory.createXMLEventWriter(new FileOutputStream(config.getOutputFile()), config.getEncoding());
 
@@ -58,21 +50,12 @@ public class StaxMain {
         StAXService service = new StAXService(readerProvidersIterator.next());
         service.process(categoryIdsCollector);
 
-        while (readerProvidersIterator.hasNext())
-        {
-            XMLEventReaderProvider readerProvider = readerProvidersIterator.next();
-            ElementWriter offersElementWriter = new ElementWriter(new WriteElementCondition(new InElement("offers")), readerProvider);
-            handlers.add(new ElementSourceHandler(offersElementWriter, mergedOut, inOffers));
+        XmlEventMergerFactory mergerFactory = new XmlEventMergerFactory(readerProviders, mergedOut, addedCategoryIds);
 
-            ElementWriter categoriesElementWriter = new ElementWriter(
-                    new WriteCategoryCondition(new WriteElementCondition(new InElement("categories")), addedCategoryIds), readerProvider);
-            handlers.add(new ElementSourceHandler(categoriesElementWriter, mergedOut, inCategories));
-        }
-
-        MultiXmlEventHandler multiEventHandler = new MultiXmlEventHandler(handlers, mergedOut);
-
-        service.process(multiEventHandler);
+        service.process(mergerFactory.create());
 
         mergedOut.close();
+
+
     }
 }

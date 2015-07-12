@@ -21,6 +21,8 @@ public class ElementWriter {
     }
 
     public void writeElements(XMLEventConsumer out) throws XMLStreamException {
+
+        System.out.println("Start merging xml "+readerProvider);
         XMLEventReader reader = readerProvider.get();
 
         while (reader.hasNext()) {
@@ -29,6 +31,8 @@ public class ElementWriter {
             if (writeEventCondition.isSuitable(xmlEvent))
                 out.add(xmlEvent);
         }
+
+        System.out.println("Completed");
     }
 
 }

@@ -1,4 +1,6 @@
-package com.company.stax;
+package com.company.stax.collectors;
+
+import com.company.stax.XmlEventHandler;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Attribute;
