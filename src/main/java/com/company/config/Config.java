@@ -14,7 +14,7 @@ public class Config {
     private List<String> files;
     private String encoding;
     private String outputFile;
-    private List<String> categoryIds;
+    private Set<String> categoryIds;
 
     public String getUser() {
         return user;
@@ -64,7 +64,11 @@ public class Config {
         this.files = files;
     }
 
-    public List<String> getCategoryIds() {
+    public Set<String> getCategoryIds() {
         return categoryIds;
+    }
+
+    public void setCategoryIds(Set<String> categoryIds) {
+        this.categoryIds = categoryIds;
     }
 }

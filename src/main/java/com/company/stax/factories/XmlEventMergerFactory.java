@@ -2,6 +2,7 @@ package com.company.stax.factories;
 
 import com.company.config.Config;
 import com.company.stax.*;
+import com.company.stax.conditions.WriteCategoryByIdsCondition;
 import com.company.stax.conditions.WriteCategoryCondition;
 import com.company.stax.conditions.WriteElementCondition;
 
@@ -9,10 +10,7 @@ import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.util.XMLEventConsumer;
 import java.io.FileOutputStream;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by user50 on 11.07.2015.
@@ -21,11 +19,13 @@ public class XmlEventMergerFactory implements XmlEventHandlerFactory {
     private List<XMLEventReaderProvider> readerProviders;
     private XMLEventConsumer mergedOut;
     private Set<String> addedCategoryIds;
+    private Set<String> idsFromConfig;
 
-    public XmlEventMergerFactory(List<XMLEventReaderProvider> readerProviders, XMLEventConsumer mergedOut, Set<String> addedCategoryIds) {
+    public XmlEventMergerFactory(List<XMLEventReaderProvider> readerProviders,
+                                 XMLEventConsumer mergedOut, Set<String> idsFromConfig) {
         this.readerProviders = readerProviders;
         this.mergedOut = mergedOut;
-        this.addedCategoryIds = addedCategoryIds;
+        this.idsFromConfig = idsFromConfig;
     }
 
     @Override
@@ -42,6 +42,8 @@ public class XmlEventMergerFactory implements XmlEventHandlerFactory {
         handlers.add(inOffers);
         handlers.add(inCategories);
 
+        Set<String> addedIds = new HashSet<>();
+
         while (readerProvidersIterator.hasNext())
         {
             XMLEventReaderProvider readerProvider = readerProvidersIterator.next();
@@ -49,9 +51,11 @@ public class XmlEventMergerFactory implements XmlEventHandlerFactory {
             handlers.add(new ElementSourceHandler(offersElementWriter, mergedOut, inOffers));
 
             ElementWriter categoriesElementWriter = new ElementWriter(
-                    new WriteCategoryCondition(new WriteElementCondition(new InElement("categories")), addedCategoryIds), readerProvider);
+                    new WriteCategoryByIdsCondition(
+                            new WriteElementCondition(new InElement("categories")), idsFromConfig, addedIds), readerProvider);
             handlers.add(new ElementSourceHandler(categoriesElementWriter, mergedOut, inCategories));
         }
+
 
         return new MultiXmlEventHandler(handlers, mergedOut);
     }

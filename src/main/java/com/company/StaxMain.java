@@ -7,6 +7,7 @@ import com.company.merge.HttpClientProvider;
 import com.company.stax.*;
 import com.company.stax.collectors.CategoryIdsCollector;
 import com.company.stax.factories.XmlEventMergerFactory;
+import com.company.stax.providers.IncludedCategoriesProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 
 import javax.xml.stream.XMLEventWriter;
@@ -50,7 +51,9 @@ public class StaxMain {
         StAXService service = new StAXService(readerProvidersIterator.next());
         service.process(categoryIdsCollector);
 
-        XmlEventMergerFactory mergerFactory = new XmlEventMergerFactory(readerProviders, mergedOut, addedCategoryIds);
+        Set<String> idsFromConfig = new IncludedCategoriesProvider(readerProviders, config.getCategoryIds()).get();
+
+        XmlEventMergerFactory mergerFactory = new XmlEventMergerFactory(readerProviders, mergedOut, idsFromConfig);
 
         service.process(mergerFactory.create());
 
